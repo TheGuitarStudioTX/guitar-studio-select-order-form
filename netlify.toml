@@ -1,0 +1,21 @@
+# Netlify deployment config for Guitar Studio Select.
+# Set SUPABASE_URL and SUPABASE_ANON_KEY in:
+#   Site settings → Build & deploy → Environment → Environment variables
+# The build step injects them into public/config.js (the anon key is public).
+
+[build]
+  publish = "public"
+  command = "node scripts/gen-config.mjs"
+
+# SPA: all routes serve index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

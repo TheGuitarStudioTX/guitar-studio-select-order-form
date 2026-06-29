@@ -1,0 +1,12 @@
+{
+  "name": "guitar-studio-select",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Guitar Studio Select — hosted order-management app (Supabase + Netlify).",
+  "type": "module",
+  "scripts": {
+    "gen-config": "node scripts/gen-config.mjs",
+    "build": "node scripts/gen-config.mjs",
+    "parse-catalog": "perl scripts/parse_catalog.pl order_form_v9.html db/03_seed_catalog.sql"
+  }
+}

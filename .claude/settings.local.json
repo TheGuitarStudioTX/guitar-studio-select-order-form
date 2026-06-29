@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($node = \\(Get-Command node -ErrorAction SilentlyContinue\\); if \\($node\\) { \"node: \" + \\(node --version\\) } else { \"node: NOT FOUND\" }; $npm = \\(Get-Command npm -ErrorAction SilentlyContinue\\); if \\($npm\\) { \"npm: \" + \\(npm --version\\) } else { \"npm: NOT FOUND\" }; $nf = \\(Get-Command netlify -ErrorAction SilentlyContinue\\); if \\($nf\\) { \"netlify: \" + \\(netlify --version\\) } else { \"netlify: NOT FOUND\" }; $git = \\(Get-Command git -ErrorAction SilentlyContinue\\); if \\($git\\) { \"git: \" + \\(git --version\\) } else { \"git: NOT FOUND\" })",
+      "PowerShell(foreach \\($c in @\\('python','python3','py','deno','bun'\\)\\) { $g = Get-Command $c -ErrorAction SilentlyContinue; if \\($g\\) { \"$c -> $\\($g.Source\\)\" } else { \"$c -> NOT FOUND\" } })",
+      "Bash(perl --version)",
+      "Bash(mkdir -p db)",
+      "Bash(perl scripts/parse_catalog.pl order_form_v9.html db/03_seed_catalog.sql)",
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell($p = Get-ChildItem \"C:\\\\Program Files\\\\Git\\\\usr\\\\bin\\\\perl.exe\",\"C:\\\\Program Files\\\\Git\\\\mingw64\\\\bin\\\\perl.exe\" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName; if \\($p\\) { $p } else { \\(Get-Command perl -ErrorAction SilentlyContinue\\).Source })",
+      "Bash(sed \"s/where slug='//; s/'\\), '/|/; s/'$//\")",
+      "Read(//tmp/**)",
+      "Bash(awk '{n=gsub\\(/'\"'\"'/,\"'\"'\"'\"\\); if \\(n%2!=0\\) print \"ODD QUOTES line \" NR \": \" substr\\($0,1,80\\)}' db/03_seed_catalog.sql)",
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git add *)",
+      "Bash(git -c commit.gpgsign=false commit -q -m 'Guitar Studio Select — order management app \\(Supabase + Netlify\\) *)"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+node_modules/
+.netlify/
+.DS_Store
+*.log
+# config.js holds only the PUBLIC anon key, but keep a clean placeholder
+# committed; do not commit a version with real keys if you prefer env-only.

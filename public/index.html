@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guitar Studio Select — Order Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ── Login gate ─────────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-crest">♪</div>
+    <h1>Guitar Studio <em>Select</em></h1>
+    <p class="sub">Order management · invite&#8209;only</p>
+    <form id="login-form" autocomplete="on">
+      <label for="li-email">Email</label>
+      <input id="li-email" type="email" autocomplete="username" required>
+      <label for="li-pw">Password</label>
+      <input id="li-pw" type="password" autocomplete="current-password">
+      <button class="btn-primary full" type="submit" id="li-submit">Sign in</button>
+    </form>
+    <div style="display:flex;justify-content:space-between;margin-top:0.8rem">
+      <button class="btn-link" id="li-magic">Email me a login link</button>
+      <button class="btn-link" id="li-reset">Forgot password</button>
+    </div>
+    <div class="login-msg" id="li-msg"></div>
+    <div class="login-foot">The Guitar Studio, LLC · Fort Worth, Texas</div>
+  </div>
+</div>
+
+<!-- ── App ────────────────────────────────────────────────────────────── -->
+<div id="app" hidden>
+  <nav id="app-nav">
+    <span class="nav-brand">Guitar Studio <em>Select</em></span>
+    <button class="nav-tab active" data-view="order">Order Form</button>
+    <button class="nav-tab" data-view="history">Order History</button>
+    <button class="nav-tab" data-view="admin">Admin</button>
+    <span class="nav-right">
+      <span class="nav-who-wrap">Signed in as <span class="who" id="who">—</span></span>
+      <button class="btn-link" id="sign-out" style="color:rgba(255,255,255,0.7)">Sign out</button>
+    </span>
+  </nav>
+
+  <!-- Order form view -->
+  <div id="view-order" class="view">
+    <div id="total-bar">
+      <span class="bar-title">Guitar Studio Select — Order</span>
+      <div class="bar-amounts">
+        <div class="bar-item"><label>Line Items</label><span id="bar-qty">0</span></div>
+        <div class="bar-item"><label>Dealer Total</label><span id="bar-total">$0.00</span></div>
+        <div class="bar-actions">
+          <button class="btn-print" id="btn-clear">Clear</button>
+          <button class="btn-supplier" id="btn-supplier">Supplier Orders</button>
+          <button class="btn-submit" id="btn-submit">Submit Order</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="search-bar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="search-input" type="text" placeholder="Search by name, SKU, or tension…">
+      </div>
+      <span class="filter-label">Filter:</span>
+      <div class="filter-chips" id="filter-chips"></div>
+      <div class="collapse-btns">
+        <button class="collapse-btn" id="btn-expand">Expand all</button>
+        <button class="collapse-btn" id="btn-collapse">Collapse all</button>
+      </div>
+      <span id="search-count"></span>
+    </div>
+
+    <div class="page-header letterhead">
+      <div class="lh-left">
+        <h1>Guitar Studio Select</h1>
+        <p>Order Form · dealer cost shown for order totals · shared across the team</p>
+      </div>
+      <div class="lh-right">
+        <div class="lh-name">The Guitar Studio, LLC</div>
+        <div>4455 Camp Bowie Blvd., Suite 230</div>
+        <div>Fort Worth, TX 76116</div>
+        <div class="lh-date" id="lh-date"></div>
+      </div>
+    </div>
+
+    <main>
+      <div id="order-form"><p style="padding:2rem;text-align:center" class="muted"><span class="spinner"></span> Loading catalog…</p></div>
+      <div id="grand-total-section">
+        <div class="gt-item"><div class="gt-label">Total Line Items</div><div class="gt-value small" id="gt-qty">0</div></div>
+        <div class="gt-item"><div class="gt-label">Grand Total — Dealer Cost</div><div class="gt-value" id="gt-total">$0.00</div></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- History view -->
+  <div id="view-history" class="view" hidden></div>
+  <!-- Admin view -->
+  <div id="view-admin" class="view" hidden></div>
+</div>
+
+<script src="config.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
