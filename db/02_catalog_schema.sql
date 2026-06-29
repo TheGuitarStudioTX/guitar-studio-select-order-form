@@ -88,8 +88,12 @@ create trigger trg_products_touch
 
 -- ------------------------------------------------------------
 -- Convenience view: the whole catalog, flattened, ready for the UI.
+-- security_invoker = true is CRITICAL: without it the view runs as its
+-- owner and BYPASSES the RLS on products/brands/suppliers, leaking dealer
+-- costs to anyone with the public anon key. With it, the view respects the
+-- caller's RLS (authenticated only).
 -- ------------------------------------------------------------
-create or replace view public.v_catalog as
+create or replace view public.v_catalog with (security_invoker = true) as
 select
   p.id, p.sku, p.description, p.retail, p.dealer_cost, p.pack_type, p.tension,
   p.group_label, p.subgroup_label, p.sort_order, p.active,
@@ -101,6 +105,10 @@ from public.products p
 join public.brands b   on b.id = p.brand_id
 left join public.suppliers s on s.id = b.supplier_id
 where b.active;
+
+-- The monthly trend view (defined in the orders schema) has the same risk —
+-- make it respect the caller's RLS too, so spend data isn't readable by anon.
+alter view if exists public.v_monthly_brand_spend set (security_invoker = on);
 
 -- ============================================================
 -- ROW LEVEL SECURITY

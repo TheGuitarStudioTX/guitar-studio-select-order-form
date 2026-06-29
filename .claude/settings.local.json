@@ -18,7 +18,8 @@
       "Bash(git -c commit.gpgsign=false commit -q -m 'Add .gitattributes for consistent line endings *)",
       "Bash(git branch *)",
       "Bash(curl -s -m 20 __TRACKED_VAR__/auth/v1/settings -H 'apikey: __TRACKED_VAR__')",
-      "Bash(git -c commit.gpgsign=false commit -q -m 'Wire config.js to live Supabase project for local testing *)"
+      "Bash(git -c commit.gpgsign=false commit -q -m 'Wire config.js to live Supabase project for local testing *)",
+      "Bash(git -c commit.gpgsign=false commit -q -m 'Restore category dividers, fix view RLS leak, harden client/dev server *)"
     ]
   }
 }

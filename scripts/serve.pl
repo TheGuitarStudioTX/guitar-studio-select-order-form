@@ -4,6 +4,10 @@
 use strict; use warnings;
 use IO::Socket::INET;
 
+# Don't let a client that hangs up mid-response kill the server.
+$SIG{PIPE} = 'IGNORE';
+$SIG{CHLD} = 'IGNORE';
+
 my $port = $ARGV[0] || 8787;
 my $root = "public";
 my %MIME = (

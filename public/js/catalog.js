@@ -45,9 +45,22 @@ export async function loadCatalog() {
 }
 
 // ── Render ──────────────────────────────────────────────────────────────
+const CAT_LABELS = { strings: "Strings", accessories: "Accessories", literature: "Literature" };
+
 export function renderOrderForm(container) {
   container.innerHTML = "";
-  for (const b of CATALOG.brands) container.appendChild(renderBrand(b));
+  let cat = null;
+  for (const b of CATALOG.brands) {
+    if (b.category !== cat) {
+      cat = b.category;
+      const h = document.createElement("div");
+      h.className = "type-section-header";
+      h.id = "type-" + cat;
+      h.textContent = CAT_LABELS[cat] || cat;
+      container.appendChild(h);
+    }
+    container.appendChild(renderBrand(b));
+  }
   return container;
 }
 
@@ -157,6 +170,7 @@ export function applyFilters() {
   const scope = brandScope();
   const brandLevel = scope[activeFilter];
   let visible = 0, total = 0;
+  const catVisible = {};
 
   for (const b of CATALOG.brands) {
     const sec = document.getElementById("brand-" + b.slug);
@@ -192,7 +206,14 @@ export function applyFilters() {
 
     const hideSection = (!brandAllowed) || (activeFilter === "ordered" && !brandHasVisible) || (q && !brandHasVisible);
     sec.style.display = hideSection ? "none" : "";
+    if (!hideSection) catVisible[b.category] = true;
     if (brandHasVisible && (q || activeFilter !== "all")) sec.classList.remove("collapsed");
+  }
+
+  // Show each category divider only if a brand under it is visible.
+  for (const cat of Object.keys(CAT_LABELS)) {
+    const h = document.getElementById("type-" + cat);
+    if (h) h.style.display = catVisible[cat] ? "" : "none";
   }
 
   const countEl = document.getElementById("search-count");
