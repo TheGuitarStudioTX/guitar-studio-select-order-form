@@ -10,6 +10,6 @@
 // data is protected by Row Level Security + invite-only login.
 // ============================================================
 window.GCS_CONFIG = {
-  SUPABASE_URL: "%%SUPABASE_URL%%",
-  SUPABASE_ANON_KEY: "%%SUPABASE_ANON_KEY%%"
+  SUPABASE_URL: "https://agmcluvqlnbwvdcggmkj.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_AbcbQTm0x9CTP7GTXor55A_TRH24-V2"
 };
