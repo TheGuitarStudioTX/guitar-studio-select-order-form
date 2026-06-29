@@ -8,14 +8,12 @@ const key = cfg.SUPABASE_ANON_KEY;
 export const configured =
   !!url && !!key && !url.includes("%%") && !key.includes("%%");
 
-// Pass a pass-through lock: the default uses the Web Locks API
-// (navigator.locks), which can deadlock in sandboxed iframes and some
-// private-browsing contexts. A 3-user app doesn't need cross-tab refresh
-// coordination, so running the callback directly is safe and robust.
-const passthroughLock = async (_name, _acquireTimeout, fn) => fn();
-
+// Use the default Web Locks API for auth — it coordinates token refresh
+// across tabs so a single-use refresh token isn't clobbered (which would
+// corrupt the stored session and hang getSession()). Boot is made resilient
+// to a bad/expired session in app.js instead.
 export const supabase = configured
   ? createClient(url, key, {
-      auth: { persistSession: true, autoRefreshToken: true, lock: passthroughLock },
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
     })
   : null;

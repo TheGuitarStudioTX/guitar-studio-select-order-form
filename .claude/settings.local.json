@@ -19,7 +19,19 @@
       "Bash(git branch *)",
       "Bash(curl -s -m 20 __TRACKED_VAR__/auth/v1/settings -H 'apikey: __TRACKED_VAR__')",
       "Bash(git -c commit.gpgsign=false commit -q -m 'Wire config.js to live Supabase project for local testing *)",
-      "Bash(git -c commit.gpgsign=false commit -q -m 'Restore category dividers, fix view RLS leak, harden client/dev server *)"
+      "Bash(git -c commit.gpgsign=false commit -q -m 'Restore category dividers, fix view RLS leak, harden client/dev server *)",
+      "Bash(curl -s -m 20 https://agmcluvqlnbwvdcggmkj.supabase.co/auth/v1/settings -H 'apikey: sb_publishable_AbcbQTm0x9CTP7GTXor55A_TRH24-V2')",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(git fetch *)",
+      "Bash(git rev-list *)",
+      "Bash(gh --version)",
+      "Bash(gh auth *)",
+      "Bash(git checkout *)",
+      "Bash(git rm *)",
+      "Bash(git -c commit.gpgsign=false commit -q -m 'chore: stop tracking .claude/settings.local.json *)",
+      "Bash(curl -s -m 20 https://guitar-studio-select-order-form.netlify.app/js/supabase.js)",
+      "Bash(git -c commit.gpgsign=false commit -q -m 'Fix catalog never loading: revert harmful auth lock, add boot resilience *)"
     ]
   }
 }

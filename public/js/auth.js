@@ -3,11 +3,19 @@
 // sign-up UI here. Users log in with email + password, or request a
 // one-time magic link.
 import { supabase, configured } from "./supabase.js";
+import { withTimeout } from "./util.js";
 
 export async function currentUser() {
   if (!configured) return null;
-  const { data } = await supabase.auth.getSession();
-  return data.session?.user ?? null;
+  try {
+    const { data } = await withTimeout(supabase.auth.getSession(), 8000, "Session check");
+    return data.session?.user ?? null;
+  } catch (e) {
+    // Auth subsystem stuck (e.g. corrupted stored session) — clear it so the
+    // login gate works on a clean slate.
+    try { Object.keys(localStorage).filter(k => k.startsWith("sb-")).forEach(k => localStorage.removeItem(k)); } catch (_) {}
+    return null;
+  }
 }
 
 export function onAuthChange(cb) {

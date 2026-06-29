@@ -7,6 +7,15 @@ export function esc(s) {
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+// Reject if a promise doesn't settle in time — so a hung network/auth call
+// surfaces as a recoverable error instead of an infinite spinner.
+export function withTimeout(promise, ms, label = "Request") {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out after ${ms / 1000}s`)), ms)),
+  ]);
+}
+
 export function debounce(fn, ms = 400) {
   let t;
   return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };

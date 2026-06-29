@@ -94,21 +94,47 @@ async function bootApp() {
   if (!orderViewReady) {
     buildFilterChips();
     wireOrderChrome();
-    try {
-      await catalog.loadCatalog();
-      catalog.renderOrderForm(document.getElementById("order-form"));
-      orders.wireOrderForm(document.getElementById("order-form"));
-      await orders.initCart(currentUser);
-      orders.applyQuantitiesToForm();
-      catalog.applyFilters();
-      orderViewReady = true;
-    } catch (err) {
-      document.getElementById("order-form").innerHTML =
-        `<p style="padding:2rem;color:#b3401f">Could not load catalog: ${err.message}<br><span class="muted">Did you run the SQL in db/ and seed the catalog?</span></p>`;
-    }
+    await initOrderView();
   }
-
   document.addEventListener("gcs:catalog-changed", reloadCatalog);
+}
+
+async function initOrderView() {
+  const target = document.getElementById("order-form");
+  target.innerHTML = `<p style="padding:2rem;text-align:center" class="muted"><span class="spinner"></span> Loading catalog…</p>`;
+  try {
+    await catalog.loadCatalog();
+    catalog.renderOrderForm(target);
+    orders.wireOrderForm(target);
+    await orders.initCart(currentUser);
+    orders.applyQuantitiesToForm();
+    catalog.applyFilters();
+    orderViewReady = true;
+  } catch (err) {
+    showOrderError(err);
+  }
+}
+
+function showOrderError(err) {
+  const msg = (err && err.message) || "Unknown error";
+  const looksLikeSession = /timed out|JWT|token|session|auth/i.test(msg);
+  document.getElementById("order-form").innerHTML = `
+    <div style="max-width:520px;margin:2rem auto;padding:1.4rem 1.5rem;border:1px solid var(--border);border-radius:8px;background:white;text-align:center">
+      <div style="font-family:'Libre Baskerville',serif;font-size:16px;color:var(--brown-dark);margin-bottom:0.5rem">Couldn’t load the catalog</div>
+      <p class="muted" style="font-size:13px;margin-bottom:1rem">${esc(msg)}.<br>${looksLikeSession ? "Your sign-in may have expired." : "This is usually a temporary connection hiccup."}</p>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" id="err-retry">Retry</button>
+        <button class="btn-soft" id="err-relogin">Sign in again</button>
+      </div>
+    </div>`;
+  document.getElementById("err-retry").addEventListener("click", initOrderView);
+  document.getElementById("err-relogin").addEventListener("click", forceReLogin);
+}
+
+async function forceReLogin() {
+  try { await auth.signOut(); } catch (e) { /* ignore */ }
+  try { Object.keys(localStorage).filter(k => k.startsWith("sb-")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  location.reload();
 }
 
 async function reloadCatalog() {

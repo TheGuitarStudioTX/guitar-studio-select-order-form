@@ -2,7 +2,7 @@
 // order form UI from it — preserving the legacy look, collapsible brand
 // sections, and all filters (category, tension, Full/Half/Singles, …).
 import { supabase } from "./supabase.js";
-import { fmt, esc } from "./util.js";
+import { fmt, esc, withTimeout } from "./util.js";
 
 let CATALOG = null; // { brands: [...], bySku: Map }
 
@@ -13,13 +13,17 @@ export async function loadCatalog() {
   const rows = [];
   const page = 1000;
   for (let from = 0; ; from += page) {
-    const { data, error } = await supabase
-      .from("v_catalog")
-      .select("*")
-      .eq("active", true)
-      .order("brand_sort", { ascending: true })
-      .order("sort_order", { ascending: true })
-      .range(from, from + page - 1);
+    const { data, error } = await withTimeout(
+      supabase
+        .from("v_catalog")
+        .select("*")
+        .eq("active", true)
+        .order("brand_sort", { ascending: true })
+        .order("sort_order", { ascending: true })
+        .range(from, from + page - 1),
+      15000,
+      "Catalog load",
+    );
     if (error) throw error;
     rows.push(...data);
     if (data.length < page) break;
