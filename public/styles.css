@@ -574,12 +574,32 @@ td.subtotal.nonzero { color: var(--green); }
 .po-foot .val { font-size:18px; font-weight:600; }
 
 @media print {
-  body > *:not(#supplier-screen) { display:none !important; }
-  #supplier-screen { position:static; background:white; }
-  #supplier-screen .no-print { display:none !important; }
+  body > *:not(.fullscreen-doc) { display:none !important; }
+  .fullscreen-doc { position:static !important; background:white; }
+  .fullscreen-doc .no-print { display:none !important; }
   .po-block.print-hide { display:none !important; }
   .po-block { page-break-after:always; border:none; }
 }
+
+/* ── Order summary (combined, printable / Save-as-PDF) ───────── */
+#summary-screen { position:fixed; inset:0; background:var(--cream); z-index:1500; overflow:auto; }
+#summary-screen .sum-wrap { max-width:840px; margin:0 auto; padding:1.5rem 1.5rem 4rem; }
+.sum-toolbar { display:flex; gap:0.5rem; margin-bottom:1.2rem; }
+.sum-letterhead { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:3px solid var(--gold); padding-bottom:1rem; margin-bottom:1.4rem; }
+.sum-letterhead .sl-title { font-family:'Libre Baskerville',serif; font-size:22px; color:var(--brown-dark); }
+.sum-letterhead .sl-sub { font-size:13px; color:var(--text-muted); margin-top:3px; }
+.sum-letterhead .sl-right { text-align:right; font-size:12px; color:var(--text-muted); line-height:1.5; }
+.sum-brand { margin-bottom:1.3rem; }
+.sum-brand-head { background:var(--brown-dark); color:var(--gold-light); padding:7px 12px; font-family:Georgia,serif; font-size:13px; font-weight:bold; display:flex; justify-content:space-between; }
+.sum-table { width:100%; border-collapse:collapse; background:white; }
+.sum-table th { padding:5px 10px; text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); border-bottom:1px solid var(--border); background:#f0e6d0; }
+.sum-table th.num, .sum-table td.num { text-align:right; }
+.sum-table td { padding:6px 10px; border-bottom:1px solid #e8dbb0; font-size:13px; }
+.sum-table td.sku { font-family:monospace; font-size:12px; color:var(--brown-mid); }
+.sum-grand { background:var(--brown-dark); color:white; padding:1rem 1.2rem; border-radius:3px; display:flex; justify-content:flex-end; gap:3rem; align-items:center; margin-top:1rem; }
+.sum-grand .lbl { font-size:10px; color:var(--gold-light); text-transform:uppercase; letter-spacing:0.07em; }
+.sum-grand .val { font-size:24px; font-weight:600; }
+.sum-grand .val.sm { font-size:18px; color:#c0a080; }
 
 /* ============================================================
    Visual refresh — same classical parchment/gold palette,

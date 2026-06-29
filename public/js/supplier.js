@@ -36,7 +36,7 @@ export function openSupplierOrders(lines, title = "Current Order") {
   if (!groups.length) { toast("No items to order yet."); return; }
   const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
-  const screen = el("div", { id: "supplier-screen" });
+  const screen = el("div", { id: "supplier-screen", class: "fullscreen-doc" });
   const wrap = el("div", { class: "sup-wrap" });
 
   // toolbar
@@ -123,6 +123,57 @@ function poBlock(g, i, today) {
   });
   block.querySelector("[data-copy]").addEventListener("click", (e) => copyEmail(g, today, e.target));
   return block;
+}
+
+// ── Combined order summary (one document, all brands) — print / Save as PDF ──
+export function openOrderSummary(lines, title = "Current Order") {
+  if (!lines.length) { toast("No items to summarize yet."); return; }
+  const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+  // group by brand, sorted by name
+  const map = new Map();
+  let grandTotal = 0, grandQty = 0;
+  for (const ln of lines) {
+    if (!map.has(ln.brand_name)) map.set(ln.brand_name, { name: ln.brand_name, items: [], total: 0, qty: 0 });
+    const g = map.get(ln.brand_name);
+    const line = (Number(ln.dealer_cost) || 0) * ln.qty;
+    g.items.push(ln); g.total += line; g.qty += ln.qty;
+    grandTotal += line; grandQty += ln.qty;
+  }
+  const groups = [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
+
+  const brandBlocks = groups.map((g) => {
+    const rows = g.items.map((it) =>
+      `<tr><td class="sku">${esc(it.sku)}</td><td>${esc(it.description)}</td>` +
+      `<td class="num">${it.qty}</td><td class="num">${fmt(it.dealer_cost)}</td>` +
+      `<td class="num">${fmt((Number(it.dealer_cost) || 0) * it.qty)}</td></tr>`).join("");
+    return `<div class="sum-brand">` +
+      `<div class="sum-brand-head"><span>${esc(g.name)}</span><span style="color:#c0a060;font-size:12px">${fmtInt(g.qty)} units · ${fmt(g.total)}</span></div>` +
+      `<table class="sum-table"><thead><tr><th>SKU</th><th>Description</th><th class="num">Qty</th><th class="num">Unit Cost</th><th class="num">Subtotal</th></tr></thead><tbody>${rows}</tbody></table>` +
+      `</div>`;
+  }).join("");
+
+  const screen = el("div", { id: "summary-screen", class: "fullscreen-doc" });
+  screen.innerHTML = `
+    <div class="sum-wrap">
+      <div class="sum-toolbar no-print">
+        <button class="btn-soft" id="sum-back">← Back</button>
+        <button class="btn-primary" id="sum-print">Print / Save as PDF</button>
+      </div>
+      <div class="sum-letterhead">
+        <div><div class="sl-title">Guitar Studio Select</div><div class="sl-sub">Order Summary — Dealer Cost · ${esc(title)}</div></div>
+        <div class="sl-right">${esc(STUDIO.name)}<br>${esc(STUDIO.address)}<br>${today}</div>
+      </div>
+      ${brandBlocks}
+      <div class="sum-grand">
+        <div style="text-align:right"><div class="lbl">Total Line Items</div><div class="val sm">${fmtInt(grandQty)}</div></div>
+        <div style="text-align:right"><div class="lbl">Grand Total — Dealer Cost</div><div class="val">${fmt(grandTotal)}</div></div>
+      </div>
+    </div>`;
+  screen.querySelector("#sum-back").addEventListener("click", () => screen.remove());
+  screen.querySelector("#sum-print").addEventListener("click", () => window.print());
+  document.body.appendChild(screen);
+  window.scrollTo(0, 0);
 }
 
 function copyEmail(g, today, btn) {

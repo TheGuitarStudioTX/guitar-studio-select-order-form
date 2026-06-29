@@ -31,7 +31,9 @@
       "Bash(git rm *)",
       "Bash(git -c commit.gpgsign=false commit -q -m 'chore: stop tracking .claude/settings.local.json *)",
       "Bash(curl -s -m 20 https://guitar-studio-select-order-form.netlify.app/js/supabase.js)",
-      "Bash(git -c commit.gpgsign=false commit -q -m 'Fix catalog never loading: revert harmful auth lock, add boot resilience *)"
+      "Bash(git -c commit.gpgsign=false commit -q -m 'Fix catalog never loading: revert harmful auth lock, add boot resilience *)",
+      "mcp__c1590a8d-b8a0-41dc-a761-5207937eba68__create_draft",
+      "Bash(git -c commit.gpgsign=false commit -q -m 'Add Print / PDF order summary button *)"
     ]
   }
 }

@@ -5,7 +5,7 @@ import * as catalog from "./catalog.js";
 import * as orders from "./orders.js";
 import { renderHistory } from "./history.js";
 import { renderAdmin } from "./admin.js";
-import { openSupplierOrders } from "./supplier.js";
+import { openSupplierOrders, openOrderSummary } from "./supplier.js";
 import { fmt, fmtInt, esc, toast, confirmDialog, promptDialog, modal, el } from "./util.js";
 
 const loginScreen = document.getElementById("login-screen");
@@ -190,6 +190,12 @@ function wireOrderChrome() {
     if (await confirmDialog("Clear all quantities from the shared order?", "Clear")) {
       await orders.clearCart(); toast("Cart cleared");
     }
+  });
+
+  document.getElementById("btn-summary").addEventListener("click", () => {
+    const lines = orders.getCartLines();
+    if (!lines.length) return toast("Add at least one item first.");
+    openOrderSummary(lines, "Current Order");
   });
 
   document.getElementById("btn-supplier").addEventListener("click", () => {
