@@ -53,17 +53,33 @@ const CAT_LABELS = { strings: "Strings", accessories: "Accessories", literature:
 
 export function renderOrderForm(container) {
   container.innerHTML = "";
-  let cat = null;
-  for (const b of CATALOG.brands) {
-    if (b.category !== cat) {
-      cat = b.category;
-      const h = document.createElement("div");
-      h.className = "type-section-header";
-      h.id = "type-" + cat;
-      h.textContent = CAT_LABELS[cat] || cat;
-      container.appendChild(h);
-    }
-    container.appendChild(renderBrand(b));
+  // Group brands by category so each category gets exactly one heading,
+  // regardless of how individual brands are sorted. Previously the heading
+  // was emitted whenever category changed while walking sort_order, so a
+  // brand whose sort_order fell outside its category's run produced a
+  // duplicate heading (and a duplicate DOM id, which broke filter hiding).
+  const known = Object.keys(CAT_LABELS);
+  const present = [...new Set(CATALOG.brands.map((b) => b.category))];
+  const cats = [
+    ...known.filter((c) => present.includes(c)),
+    ...present.filter((c) => !known.includes(c)).sort(),
+  ];
+  // Sort key: alphabetical by brand name, ignoring a leading "The " and any
+  // leading punctuation, so "The SoundFile" files under S and "D'Addario"
+  // under D.
+  const sortKey = (b) =>
+    (b.name || b.slug || "").replace(/^the\s+/i, "").replace(/^[^\p{L}\p{N}]+/u, "").toLowerCase();
+  for (const cat of cats) {
+    const inCat = CATALOG.brands
+      .filter((b) => b.category === cat)
+      .sort((x, y) => sortKey(x).localeCompare(sortKey(y)));
+    if (!inCat.length) continue;
+    const h = document.createElement("div");
+    h.className = "type-section-header";
+    h.id = "type-" + cat;
+    h.textContent = CAT_LABELS[cat] || cat;
+    container.appendChild(h);
+    for (const b of inCat) container.appendChild(renderBrand(b));
   }
   return container;
 }
